@@ -33,7 +33,10 @@ int Server::run(int argc, char* argv[])
       print(parseError(e));
       return EXIT_CONFIG;
     }
-    return Application::run();
+    print("server started: " + std::string(host));
+    int result = Application::run();
+    print("server stopped");
+    return result;
 }
 
 int Server::main(const std::vector<std::string>& args)
@@ -63,10 +66,14 @@ int Server::main(const std::vector<std::string>& args)
             int totalSocketsToProcess = Net::Socket::select(read, write, error, timeout);
             if (totalSocketsToProcess > 0)
             {
-                 
-
+                for (auto &s : read) {
+                    Net::DatagramSocket udp(s);
+                    int avalible = udp.available();
+                    int x = 1;
+                }
 
                  //todo working with sockets
+
             }
             Thread::sleep(1);
         }

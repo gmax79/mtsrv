@@ -35,3 +35,4 @@
 /poco/
 /x64/
 *.VC.db
+*.VC.VC.opendb
