@@ -1,7 +1,7 @@
-#include "stdlibs.h"
-#include "poco.h"
+#include "libs.h"
 #include "server.h"
-#include "game.h"
+#include "trafficQueue.h"
+#include "logicThread.h"
 
 const char* host = "127.0.0.1:4444";
 
@@ -41,7 +41,10 @@ int Server::run(int argc, char* argv[])
 
 int Server::main(const std::vector<std::string>& args)
 {
-    Game game;
+    TrafficQueue queue;
+    bool logicThreadState = true;
+    std::thread lt(logicThread, std::ref(queue), std::ref(logicThreadState));
+
     int result = EXIT_OK;
     try {
         const long wait_mks = 200 * 1000;      
@@ -55,6 +58,9 @@ int Server::main(const std::vector<std::string>& args)
         serverSocket->bind(s, true);
         listenSockets.push_back(serverSocket);
 
+        const int buffer_size = 1500;
+        char buffer[buffer_size];
+
         Net::Socket::SocketList read, write, error;
         while (workingMode)
         {
@@ -63,17 +69,15 @@ int Server::main(const std::vector<std::string>& args)
             [&](SharedPtr<Net::DatagramSocket> s) { read.push_back(*s); });
             write.assign(read.begin(), read.end());
             error.assign(read.begin(), read.end());
-            int totalSocketsToProcess = Net::Socket::select(read, write, error, timeout);
+            int totalSocketsToProcess = Net::Socket::select(read, write, error, timeout);            
             if (totalSocketsToProcess > 0)
             {
                 for (auto &s : read) {
                     Net::DatagramSocket udp(s);
                     int avalible = udp.available();
-                    int x = 1;
+                    int received = udp.receiveBytes(buffer, buffer_size);
+                    queue.push(buffer, received);
                 }
-
-                 //todo working with sockets
-
             }
             Thread::sleep(1);
         }
@@ -83,10 +87,18 @@ int Server::main(const std::vector<std::string>& args)
         result = e.code();
         print(parseError(e));
     }
+    logicThreadState = false;
+    lt.join();
     return result;
 }
 
 void Server::stop()
 {
     workingMode = false;
+    stopEvent.wait();
+}
+
+void Server::close()
+{
+    stopEvent.notify();
 }

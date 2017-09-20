@@ -13,10 +13,16 @@
     <ClInclude Include="server.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdlibs.h">
+    <ClInclude Include="event.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="game.h">
+    <ClInclude Include="libs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trafficQueue.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logicThread.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -25,6 +31,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trafficQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logicThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

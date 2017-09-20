@@ -1,9 +1,7 @@
-#include "poco.h"
 #include "server.h"
-#include "stdlibs.h"
+#include "libs.h"
 
 #if defined(POCO_OS_FAMILY_WINDOWS)
-#include <SDKDDKVer.h>
 std::function<void()> stopHandler;
 BOOL ConsoleCtrlHandler(DWORD ctrlType)
 {
@@ -21,10 +19,9 @@ void setStopGameHandlers(std::function<void()> f)
 }
 
 void clearStopGameHandlers()
-{
+{    
 }
 #else
-//todo
 #endif
 
 int main(int argc, char* argv[])
@@ -33,9 +30,6 @@ int main(int argc, char* argv[])
     setStopGameHandlers(std::bind(&Server::stop, &s));
     int result = s.run(argc, argv);
     clearStopGameHandlers();
-#ifdef _DEBUG
-    if (result != Application::EXIT_OK)
-        std::getchar();
-#endif
+    s.close();
     return result;
 }

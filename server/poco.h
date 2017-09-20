@@ -1,5 +1,8 @@
 #pragma once
 
+//Foundation
+#include "Poco/Dynamic/Var.h"
+
 //Net
 #include "Poco/Net/DatagramSocket.h"
 
@@ -7,7 +10,8 @@
 #include "Poco/Util/Application.h"
 #include "Poco/Util/OptionException.h"
 
-// using only Poco è Poco::Util without namespace, other though namespace
+//Json
+#include "Poco/JSON/Parser.h"
+
 using namespace Poco;
 using namespace Poco::Util;
-
