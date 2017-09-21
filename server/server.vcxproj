@@ -152,14 +152,19 @@
     <ClCompile Include="trafficQueue.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="server.cpp" />
+    <ClCompile Include="usersQueue.cpp" />
+    <ClCompile Include="usersSharedTable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="command.h" />
     <ClInclude Include="event.h" />
     <ClInclude Include="logicThread.h" />
     <ClInclude Include="trafficQueue.h" />
     <ClInclude Include="poco.h" />
     <ClInclude Include="server.h" />
     <ClInclude Include="libs.h" />
+    <ClInclude Include="usersQueue.h" />
+    <ClInclude Include="usersSharedTable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

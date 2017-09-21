@@ -18,8 +18,13 @@ void TrafficQueue::push(const char* data, int len)
 bool TrafficQueue::pop(std::string& packet, std::chrono::milliseconds waittime)
 {
     std::unique_lock<std::mutex> lk(m_inputPacketsMutex);
-    if (m_inputPacketsEvent.wait_for(lk, waittime) == std::cv_status::timeout)
-        return false;
+    if (m_inputPackets.empty())
+    {
+        if (m_inputPacketsEvent.wait_for(lk, waittime) == std::cv_status::timeout)
+            return false;
+        if (m_inputPackets.empty())
+            return false;
+    }
     packet.assign(m_inputPackets.front());
     m_inputPackets.pop();
     return true;

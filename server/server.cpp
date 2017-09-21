@@ -25,7 +25,6 @@ Server::Server() : workingMode(true)
 
 int Server::run(int argc, char* argv[])
 {
-    ///Application::setUnixOptions(true);
     try {
       Application::init(argc, argv);
     }
@@ -58,7 +57,7 @@ int Server::main(const std::vector<std::string>& args)
         serverSocket->bind(s, true);
         listenSockets.push_back(serverSocket);
 
-        const int buffer_size = 1500;
+        const int buffer_size = 1500; // mtu
         char buffer[buffer_size];
 
         Net::Socket::SocketList read, write, error;
@@ -67,19 +66,21 @@ int Server::main(const std::vector<std::string>& args)
      		read.clear();
             std::for_each(listenSockets.begin(), listenSockets.end(),
             [&](SharedPtr<Net::DatagramSocket> s) { read.push_back(*s); });
-            write.assign(read.begin(), read.end());
-            error.assign(read.begin(), read.end());
+            write.clear(); // assign(read.begin(), read.end());
+            error.clear(); // assign(read.begin(), read.end());
             int totalSocketsToProcess = Net::Socket::select(read, write, error, timeout);            
             if (totalSocketsToProcess > 0)
             {
                 for (auto &s : read) {
                     Net::DatagramSocket udp(s);
-                    int avalible = udp.available();
-                    int received = udp.receiveBytes(buffer, buffer_size);
-                    queue.push(buffer, received);
+                    while(true) {
+                        int received = udp.receiveBytes(buffer, buffer_size);
+                        if (received <= 0)
+                            break;
+                        queue.push(buffer, received);
+                    }
                 }
             }
-            Thread::sleep(1);
         }
     }
     catch(Poco::Exception& e) 

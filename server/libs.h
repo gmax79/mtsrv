@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <queue>
+#include <future>
 
 #include <assert.h>
 
